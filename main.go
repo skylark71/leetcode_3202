@@ -10,29 +10,24 @@ func main() {
 
 func maximumLength(nums []int, k int) int {
 	n := len(nums)
-	dp := make([]map[int]int, n)
-
+	dp := make([]int, n*k)
 	maxLen := 1
 
 	for i := 0; i < n; i++ {
-		dp[i] = make(map[int]int)
 		for j := 0; j < i; j++ {
 			mod := (nums[j] + nums[i]) % k
-			prevLen := dp[j][mod]
-			if prevLen == 0 {
-				prevLen = 1 // стартовая длина
+			prev := dp[j*k+mod]
+			if prev == 0 {
+				prev = 1
 			}
-			dp[i][mod] = max(dp[i][mod], prevLen+1)
-			maxLen = max(maxLen, dp[i][mod])
+			idx := i*k + mod
+			if prev+1 > dp[idx] {
+				dp[idx] = prev + 1
+				if dp[idx] > maxLen {
+					maxLen = dp[idx]
+				}
+			}
 		}
 	}
-
 	return maxLen
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
